@@ -25,21 +25,24 @@ module Graphs
     attr_reader :graph_s
   end
 
+  # TODO: Weight
   class Distance
-    # graph_nodes: AB9 BC5
-    def initialize(*graph_nodes)
-      @graph_nodes = graph_nodes
+    # graph: { 'A' => { 'B' => 5 } }
+    def initialize(graph)
+      @graph = graph
     end
 
-    def call(*node_names)
-      9
-    end
-    private
-
-    def distances
-      @distances ||= begin
-
+    def call(nodes)
+      # more_nodes = nodes.dup # array fine to dup
+      distance = 0
+      nodes.each_with_index do |node, i|
+        next_node = nodes[i + 1] or break
+        distance += graph[node][next_node]
       end
+      distance
     end
+
+    private
+    attr_reader :graph
   end
 end
