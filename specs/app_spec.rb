@@ -28,10 +28,28 @@ RSpec.describe Graphs::Distance do
       context "2. The route A-D" do
         it { expect(subject.call(%w(A D))).to eq 5 }
       end
+
+      context "3. The route A-D-C" do
+        it { expect(subject.call(%w(A D C))).to eq 13 }
+      end
+
+      context "4. The route A-E-B-C-D" do
+        it { expect(subject.call(%w(A E B C D))).to eq 22 }
+      end
+
+      context "5. The route A-E-D" do
+        it { expect(subject.call(%w(A E D))).to eq "NO SUCH ROUTE" }
+      end
+
     end
   end
 end
 
 # TODO:
 # supply via file
+
+
+
+
+
 

@@ -32,12 +32,14 @@ module Graphs
       @graph = graph
     end
 
-    def call(nodes)
+    # TODO: extract view resp
+    # TODO: single point of exit
+    def call(nodes, no_such_route: "NO SUCH ROUTE")
       # more_nodes = nodes.dup # array fine to dup
       distance = 0
       nodes.each_with_index do |node, i|
         next_node = nodes[i + 1] or break
-        distance += graph[node][next_node]
+        distance += graph[node][next_node] || (return no_such_route)
       end
       distance
     end
