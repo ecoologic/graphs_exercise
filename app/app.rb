@@ -25,8 +25,7 @@ module Graphs
     attr_reader :graph_s
   end
 
-  # TODO: Weight
-  class Distance
+  class Weight
     # graph: { 'A' => { 'B' => 5 } }
     def initialize(graph)
       @graph = graph
@@ -36,15 +35,16 @@ module Graphs
     # TODO: single point of exit
     def call(nodes, no_such_route: "NO SUCH ROUTE")
       # more_nodes = nodes.dup # array fine to dup
-      distance = 0
+      weight = 0
       nodes.each_with_index do |node, i|
         next_node = nodes[i + 1] or break
-        distance += graph[node][next_node] || (return no_such_route)
+        weight += graph[node][next_node] || (return no_such_route)
       end
-      distance
+      weight
     end
 
     private
     attr_reader :graph
   end
+
 end

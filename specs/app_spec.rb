@@ -15,10 +15,10 @@ RSpec.describe Graphs::Parser do
   end
 end
 
-RSpec.describe Graphs::Distance do
+RSpec.describe Graphs::Weight do
   context "with the test graph" do
-    let(:graph_distances) { Graphs::Parser.new("AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7").to_h }
-    subject { described_class.new(graph_distances) }
+    let(:graph_weights) { Graphs::Parser.new("AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7").to_h }
+    subject { described_class.new(graph_weights) }
 
     describe '#call' do
       context "1. The route A-B-C" do
@@ -40,16 +40,9 @@ RSpec.describe Graphs::Distance do
       context "5. The route A-E-D" do
         it { expect(subject.call(%w(A E D))).to eq "NO SUCH ROUTE" }
       end
-
     end
   end
 end
 
 # TODO:
 # supply via file
-
-
-
-
-
-
