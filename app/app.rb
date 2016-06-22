@@ -62,6 +62,33 @@ module Graphs
       node_count
     end
 
+    def lightest(start, destination)
+      all_nodes = vertexes.each.reduce [] do |nodes, (node, weights)|
+        nodes + [node] + weights.keys
+      end
+
+      weights = all_nodes.reduce({}) do |weights, node|
+        weights.merge node => Float::INFINITY
+      end
+
+      weights[start] = 0
+
+      while all_nodes.any? do
+        min_node = all_nodes.min { |a, b| weights[a] <=> weights[b] }
+
+        return if [nil, Float::INFINITY].include?(min_node)
+
+        all_nodes.delete(min_node)
+
+        vertexes[min_node].each_key do |node|
+          weight = weights[min_node] + (vertexes[min_node][node] || Float::INFINITY)
+          weights[node] = weight if weights[node] && weight < weights[node]
+        end
+      end
+
+      weights[destination] != Float::INFINITY && weights[destination]
+    end
+
     private
     attr_reader :vertexes
 
