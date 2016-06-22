@@ -49,25 +49,33 @@ RSpec.describe Graphs::Path do
     let(:graph_weights) { Graphs::Parser.new("AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7").vertexes }
     subject { described_class.new(graph_weights) }
 
-    # TODO: length ambiguous?
-    describe '#length' do
+    describe '#count' do
       context "6. Starting and ending at C with a maximum of 3 stops" do
         it "finds 2 paths" do
-          actual = subject.length('C', 'C', max_traverses: 3)
+          actual = subject.count('C', 'C', max_traverses: 3)
+          expect(actual).to eq 2
+        end
+      end
+    end
+
+    describe '#count' do
+      context "6. Starting and ending at C with a maximum of 3 stops" do
+        it "finds 2 paths" do
+          actual = subject.count('C', 'C', max_traverses: 3)
           expect(actual).to eq 2
         end
       end
 
       context "7. Starting at A and ending at C with exactly 4 stops" do
         it "finds 3 paths" do
-          actual = subject.length('A', 'C', min_traverses: 4, max_traverses: 4)
+          actual = subject.count('A', 'C', min_traverses: 4, max_traverses: 4)
           expect(actual).to eq 3
         end
       end
 
       context "10. From C to C with a weight of less than 30" do
         it "finds 7 paths" do
-          expect(subject.length('C', 'C', max_weight: 29)).to eq 7
+          expect(subject.count('C', 'C', max_weight: 29)).to eq 7
         end
       end
     end

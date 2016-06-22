@@ -55,11 +55,20 @@ module Graphs
       @vertexes = vertexes
     end
 
-    def length(start, destination, options = {})
+    def weight(start, destination, options = {})
       options = default_options.merge(options)
-      node_count = 0
-      traverse(start, destination, options, blank_history) { node_count += 1 }
-      node_count
+      weight = 0
+      traverse(start, destination, options, blank_history) do |history|
+        weight += history[:weight]
+      end
+      weight
+    end
+
+    def count(start, destination, options = {})
+      options = default_options.merge(options)
+      path_count = 0
+      traverse(start, destination, options, blank_history) { path_count += 1 }
+      path_count
     end
 
     def lightest(start, destination)
@@ -73,8 +82,7 @@ module Graphs
 
       weights[start] = 0
 
-      # Point 9: traveling to the same town you should leave it
-      if start == destination
+      if start == destination # Point #9
         all_nodes.delete(start)
         weights[start] = Float::INFINITY
         vertexes[start].each { |node, weight| weights[node] = weight }
@@ -107,7 +115,7 @@ module Graphs
 
       if found && shortest_ok && longest_ok
         puts "FOUND #{history[:path]}" # TODO: remove
-        yield callback
+        yield history
       end
 
       # Must run even when a path is found to satisfy Point #10
