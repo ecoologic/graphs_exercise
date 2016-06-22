@@ -64,6 +64,12 @@ RSpec.describe Graphs::Path do
           expect(actual).to eq 3
         end
       end
+
+      context "10. From C to C with a weight of less than 30" do
+        it "finds 7 paths" do
+          expect(subject.length('C', 'C', max_weight: 29)).to eq 7
+        end
+      end
     end
 
     describe '#lightest' do

@@ -108,9 +108,12 @@ module Graphs
       if found && shortest_ok && longest_ok
         puts "FOUND #{history[:path]}" # TODO: remove
         yield callback
-      elsif longest_ok
+      end
+
+      # Must run even when a path is found to satisfy Point #10
+      if longest_ok
         vertexes[current_node].each do |next_node, weight|
-          # Re-passing required for point 7
+          # Re-passing required for Point #7
           # next if (history[:path] - [destination]).include?(next_node)
           updated_history = {
             weight:         history[:weight] + weight,
