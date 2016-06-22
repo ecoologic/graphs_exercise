@@ -1,23 +1,23 @@
 require_relative 'spec_helper'
 
 RSpec.describe Graphs::Parser do
-  context "with the test graph" do
+  context "with the test vertexes" do
     subject { described_class.new("AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7") }
 
-    describe '#to_h' do
+    describe '#vertexes' do
       it "has a route from A to B of 5" do
-        expect(subject.to_h['A']['B']).to eq 5
+        expect(subject.vertexes['A']['B']).to eq 5
       end
       it "has a route from D to C of 8" do
-        expect(subject.to_h['C']['E']).to eq 2
+        expect(subject.vertexes['C']['E']).to eq 2
       end
     end
   end
 end
 
 RSpec.describe Graphs::Weight do
-  context "with the test graph" do
-    let(:graph_weights) { Graphs::Parser.new("AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7").to_h }
+  context "with the test vertexes" do
+    let(:graph_weights) { Graphs::Parser.new("AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7").vertexes }
     subject { described_class.new(graph_weights) }
 
     describe '#call' do
@@ -39,6 +39,30 @@ RSpec.describe Graphs::Weight do
 
       context "5. The route A-E-D" do
         it { expect(subject.call(%w(A E D))).to eq "NO SUCH ROUTE" }
+      end
+    end
+  end
+end
+
+RSpec.describe Graphs::Path do
+  context "with the test vertexes" do
+    let(:graph_weights) { Graphs::Parser.new("AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7").vertexes }
+    subject { described_class.new(graph_weights) }
+
+    # TODO: length ambiguous?
+    describe '#length' do
+      context "6. Starting and ending at C with a maximum of 3 stops" do
+        it "finds 2 paths" do
+          actual = subject.length('C', 'C', max_traverses: 3)
+          expect(actual).to eq 2
+        end
+      end
+
+      context "7. Starting at A and ending at C with exactly 4 stops" do
+        it "finds 3 paths" do
+          actual = subject.length('A', 'C', min_traverses: 4, max_traverses: 4)
+          expect(actual).to eq 3
+        end
       end
     end
   end
