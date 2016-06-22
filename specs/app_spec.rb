@@ -70,9 +70,10 @@ RSpec.describe Graphs::Path do
       context "8. The lightest route from A to C" do
         it { expect(subject.lightest('A', 'C')).to eq 9 }
       end
+
+      context "9. The lightest route from A to B" do
+        it { expect(subject.lightest('B', 'B')).to eq 9 }
+      end
     end
   end
 end
-
-# TODO:
-# supply via file

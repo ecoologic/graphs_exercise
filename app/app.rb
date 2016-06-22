@@ -27,14 +27,14 @@ module Graphs
 
   ##############################################################################
 
+  # TODO? still needed?
   class Weight
     # vertexes: { 'A' => { 'B' => 5 } }
     def initialize(vertexes)
       @vertexes = vertexes
     end
 
-    # TODO: extract view resp
-    # TODO: single point of exit (catch)
+    # TODO: extract view concern and throw :not_found
     def call(nodes, no_such_route: "NO SUCH ROUTE")
       weight = 0
       nodes.each_with_index do |node, i|
@@ -73,6 +73,13 @@ module Graphs
 
       weights[start] = 0
 
+      # Point 9: traveling to the same town you should leave it
+      if start == destination
+        all_nodes.delete(start)
+        weights[start] = Float::INFINITY
+        vertexes[start].each { |node, weight| weights[node] = weight }
+      end
+
       while all_nodes.any? do
         min_node = all_nodes.min { |a, b| weights[a] <=> weights[b] }
 
@@ -99,7 +106,7 @@ module Graphs
                     history[:weight]         <= options[:max_weight]
 
       if found && shortest_ok && longest_ok
-        puts "FOUND #{history[:path]}"
+        puts "FOUND #{history[:path]}" # TODO: remove
         yield callback
       elsif longest_ok
         vertexes[current_node].each do |next_node, weight|
