@@ -11,34 +11,40 @@ RSpec.describe Graphs::Parser do
       it "has a route from D to C of 8" do
         expect(subject.vertexes['C']['E']).to eq 2
       end
+      it "handles shit"
     end
   end
 end
 
-RSpec.describe Graphs::Weight do
+RSpec.describe Graphs::HardPath do
   context "with the test vertexes" do
     let(:graph_weights) { Graphs::Parser.new("AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7").vertexes }
-    subject { described_class.new(graph_weights) }
+    subject { described_class.new(graph_weights, nodes: nodes) }
 
-    describe '#call' do
+    describe '#weight' do
       context "1. The route A-B-C" do
-        it { expect(subject.call(%w(A B C))).to eq 9 }
+        let(:nodes) { %w(A B C) }
+        it { expect(subject.weight).to eq 9 }
       end
 
       context "2. The route A-D" do
-        it { expect(subject.call(%w(A D))).to eq 5 }
+        let(:nodes) { %w(A D) }
+        it { expect(subject.weight).to eq 5 }
       end
 
       context "3. The route A-D-C" do
-        it { expect(subject.call(%w(A D C))).to eq 13 }
+        let(:nodes) { %w(A D C) }
+        it { expect(subject.weight).to eq 13 }
       end
 
       context "4. The route A-E-B-C-D" do
-        it { expect(subject.call(%w(A E B C D))).to eq 22 }
+        let(:nodes) { %w(A E B C D) }
+        it { expect(subject.weight).to eq 22 }
       end
 
       context "5. The route A-E-D" do
-        it { expect(subject.call(%w(A E D))).to eq "NO SUCH ROUTE" }
+        let(:nodes) { %w(A E D) }
+        it { expect(subject.weight).to eq "NO SUCH ROUTE" }
       end
     end
   end

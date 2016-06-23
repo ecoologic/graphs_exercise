@@ -47,14 +47,21 @@ Output #10: 7
 
 ### Requirements
 
-* Ruby
+* Ruby 2.3.1
 * Bundler Gem
 
 ### Install
 
     $ bundle
-    $ rspec spec --color # verify no errors
+    $ bundle exec rspec specs --color --format d # verify no errors
 
 ### Run
 
-    $ ruby app.rb # TODO
+    $ ruby run.rb fixtures/example_graph.txt
+    # don't spend too long here
+    $ ruby run.rb fixtures/example_graph_underscore.txt
+    $ ruby run.rb fixtures/example_graph_spaces.txt
+    $ ruby run.rb fixtures/example_graph_multi_line.txt
+    $ ruby run.rb fixtures/example_graph_extra_nodes.txt
+    $ ruby run.rb fixtures/example_graph_missing_nodes.txt
+    $ ruby run.rb fixtures/example_graph_bad_input.txt

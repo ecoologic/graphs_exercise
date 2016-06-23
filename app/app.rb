@@ -1,17 +1,18 @@
 module Graphs
   class Parser
-    VERTEX_REGEX = /(\w)(\w)(\d+)/
+    VERTEX_REGEX = /(\w)(\w)(\d+)/m
 
     # eg: raw_vertexes_s = "AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7"
+    # todo: nodes
     def initialize(raw_vertexes_s)
       @raw_vertexes_s = raw_vertexes_s
     end
 
-    # eg: { 'A' => { 'B' => 5 }, 'B' => { 'C' => 4 } }
+    # result: { 'A' => { 'B' => 5 }, 'B' => { 'C' => 4 } }
     def vertexes
-      @vertexes ||= vertexes_parts.reduce({}) do |result, (current_node, end_node, weight)|
-        result[current_node.upcase] ||= {}
-        result[current_node.upcase][end_node.upcase] = weight.to_i
+      @vertexes ||= vertexes_parts.reduce({}) do |result, (start_node, end_node, weight)|
+        result[start_node.upcase] ||= {}
+        result[start_node.upcase][end_node.upcase] = weight.to_i
         result
       end
     end
@@ -27,25 +28,22 @@ module Graphs
 
   ##############################################################################
 
-  # TODO? still needed?
-  class Weight
-    # vertexes: { 'A' => { 'B' => 5 } }
-    def initialize(vertexes)
-      @vertexes = vertexes
+  class HardPath
+    def initialize(vertexes, nodes:)
+      @vertexes, @nodes = vertexes, nodes
     end
 
-    # TODO: extract view concern and throw :not_found
-    def call(nodes, no_such_route: "NO SUCH ROUTE")
+    def weight(not_found: "NO SUCH ROUTE")
       weight = 0
       nodes.each_with_index do |node, i|
         next_node = nodes[i + 1] or break
-        weight += vertexes[node][next_node] || (return no_such_route)
+        weight += vertexes[node][next_node] || (return not_found)
       end
       weight
     end
 
     private
-    attr_reader :vertexes
+    attr_reader :vertexes, :nodes
   end
 
   ##############################################################################
@@ -114,7 +112,7 @@ module Graphs
                     history[:weight]         <= options[:max_weight]
 
       if found && shortest_ok && longest_ok
-        puts "FOUND #{history[:path]}" # TODO: remove
+        # puts "FOUND #{history[:path]}"
         yield history
       end
 
@@ -144,5 +142,62 @@ module Graphs
     def default_options
       { min_traverses: 1, max_traverses: 1_000, max_weight: 1_000 }
     end
+  end
+end
+
+class RailwayQuery
+  def initialize(action, params)
+    case action.to_sym
+    when :x then 1
+    end
+  end
+end
+
+class Console
+  DEFAULT_READ_STRATEGY = ->(*) { STDIN::gets.chomp }
+  DEFAULT_WRITE_STRATEGY = ->(*args) { puts *args }
+
+  def initialize(file_path, read_strategy: DEFAULT_READ_STRATEGY, write_strategy: DEFAULT_WRITE_STRATEGY)
+    @read_strategy  = read_strategy
+    @write_strategy = write_strategy
+    @raw_vertexes_s = File.read(file_path)
+    @vertexes = Graphs::Parser.new(raw_vertexes_s).vertexes
+  end
+
+  def call
+    display_instructions
+    execute_actions
+
+    say "\n* Bye *\n\n"
+  end
+
+  private
+
+  attr_reader :raw_vertexes_s, :vertexes, :read_strategy, :write_strategy
+
+  def display_instructions
+    say "\n* Welcome *\n"
+    say "Your graph is: " + raw_vertexes_s
+    say "Which have been parsed into: " + vertexes.inspect
+    say "Your options are:"
+  end
+
+  def get_input
+    read_strategy.()
+  end
+
+  def say(*args)
+    write_strategy.(*args)
+  end
+
+  def execute_actions
+    say "\nExit with an empty line"
+    until (input = get_input) == '' do
+      execute_action(input)
+    end
+  end
+
+  def execute_action(input)
+    say input
   end
 end
