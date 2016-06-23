@@ -12,31 +12,26 @@ module Graphs
     end
 
     def lightest
-      all_nodes = vertexes.each.reduce [] do |nodes, (node, weights)|
-        nodes + [node] + weights.keys
-      end
+      remaining_nodes = all_nodes
+      weights         = all_weights
 
-      weights = all_nodes.reduce({}) do |weights, node|
-        weights.merge node => Float::INFINITY
-      end
-
-      weights[start] = 0
-
-      if start == destination # Point #9
-        all_nodes.delete(start)
-        weights[start] = Float::INFINITY
+      if start == destination # Point #9 start and end in the same route
         vertexes[start].each { |node, weight| weights[node] = weight }
+        remaining_nodes.delete(start)
+        weights[start] = Float::INFINITY
+      else
+        weights[start] = 0
       end
 
-      while all_nodes.any? do
-        min_node = all_nodes.min { |a, b| weights[a] <=> weights[b] }
+      until remaining_nodes.empty?
+        lightest_node = remaining_nodes.min { |a, b| weights[a] <=> weights[b] }
 
-        return if [nil, Float::INFINITY].include?(min_node)
+        break if lightest_node == Float::INFINITY
 
-        all_nodes.delete(min_node)
+        remaining_nodes.delete(lightest_node)
 
-        vertexes[min_node].each_key do |node|
-          weight = weights[min_node] + (vertexes[min_node][node] || Float::INFINITY)
+        vertexes[lightest_node].each_key do |node|
+          weight = weights[lightest_node] + (vertexes[lightest_node][node] || Float::INFINITY)
           weights[node] = weight if weights[node] && weight < weights[node]
         end
       end
@@ -84,6 +79,18 @@ module Graphs
 
     def default_options
       { min_traverses: 1, max_traverses: 1_000, max_weight: 1_000 }
+    end
+
+    def all_nodes
+      vertexes.each.reduce [] do |nodes, (node, weights)|
+        nodes + [node] + weights.keys
+      end
+    end
+
+    def all_weights
+      all_nodes.reduce({}) do |weights, node|
+        weights.merge node => Float::INFINITY
+      end
     end
   end
 end
