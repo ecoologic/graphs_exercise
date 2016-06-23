@@ -150,9 +150,12 @@ class RailwayQuery
     when :path_count
       result = Graphs::Path.new(
         vertexes,
-        start: params[0],
+        start:       params[0],
         destination: params[1]
-      ).count(min_traverses: params[2].to_i, max_traverses: params[3].to_i)
+      ).count(
+        min_traverses: params[2].to_i,
+        max_traverses: params[3].to_i,
+        max_weight:    params[4].to_i)
       "There are #{result} paths."
     else
       "Command not recognised"
@@ -192,8 +195,8 @@ class Console
     say "Here's some examples:\n"
     say "\n4. The distance of the route A-E-B-C-D:"
     say "\tfix_path_distance A B C"
-    say "\n6. The number of trips starting at C and ending at C with a maximum of 3 stops:"
-    say "\tpath_count C C 1 3"
+    say "\n6. The number of trips starting at C and ending at C with a maximum of 3 stops max weight 99:"
+    say "\tpath_count C C 1 3 99"
   end
 
   def get_input
