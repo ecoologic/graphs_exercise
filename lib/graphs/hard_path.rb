@@ -4,11 +4,11 @@ module Graphs
       @vertexes, @nodes = vertexes, nodes
     end
 
-    def weight(not_found: "NO SUCH ROUTE")
+    def weight
       weight = 0
       nodes.each_with_index do |node, i|
         next_node = nodes[i + 1] or break
-        weight += vertexes[node][next_node] || (return not_found)
+        weight += vertexes[node][next_node] || (return false)
       end
       weight
     end

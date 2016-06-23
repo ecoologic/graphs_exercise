@@ -12,7 +12,6 @@ RSpec.describe Graphs::Parser do
       it "has a route from D to C of 8" do
         expect(subject.vertexes['C']['E']).to eq 2
       end
-      it "handles shit"
     end
   end
 end
@@ -45,7 +44,7 @@ RSpec.describe Graphs::HardPath do
 
       context "5. The route A-E-D" do
         let(:nodes) { %w(A E D) }
-        it { expect(subject.weight).to eq "NO SUCH ROUTE" }
+        it { expect(subject.weight).to eq false }
       end
     end
   end
