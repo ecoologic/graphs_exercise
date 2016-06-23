@@ -1,4 +1,5 @@
-require_relative 'spec_helper'
+require 'pry'
+require_relative '../lib/app'
 
 RSpec.describe Graphs::Parser do
   context "with the test vertexes" do
