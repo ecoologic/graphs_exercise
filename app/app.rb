@@ -49,27 +49,18 @@ module Graphs
   ##############################################################################
 
   class Path
-    def initialize(vertexes)
-      @vertexes = vertexes
+    def initialize(vertexes, start:, destination:)
+      @vertexes, @start, @destination = vertexes, start, destination
     end
 
-    def weight(start, destination, options = {})
-      options = default_options.merge(options)
-      weight = 0
-      traverse(start, destination, options, blank_history) do |history|
-        weight += history[:weight]
-      end
-      weight
-    end
-
-    def count(start, destination, options = {})
+    def count(options = {})
       options = default_options.merge(options)
       path_count = 0
       traverse(start, destination, options, blank_history) { path_count += 1 }
       path_count
     end
 
-    def lightest(start, destination)
+    def lightest
       all_nodes = vertexes.each.reduce [] do |nodes, (node, weights)|
         nodes + [node] + weights.keys
       end
@@ -103,7 +94,7 @@ module Graphs
     end
 
     private
-    attr_reader :vertexes
+    attr_reader :vertexes, :start, :destination
 
     def traverse(current_node, destination, options, history, &callback)
       found       = current_node == destination
@@ -151,11 +142,20 @@ class RailwayQuery
   end
 
   def call(action, *params)
-    case action.to_sym
-      # TODO: not_found
+    case action.downcase.to_sym
     when :fix_path_distance
+      # TODO: not_found
       result = Graphs::HardPath.new(vertexes, nodes: params).weight
-      "The distance is #{result}"
+      "The distance is #{result}."
+    when :path_count
+      result = Graphs::Path.new(
+        vertexes,
+        start: params[0],
+        destination: params[1]
+      ).count(min_traverses: params[2].to_i, max_traverses: params[3].to_i)
+      "There are #{result} paths."
+    else
+      "Command not recognised"
     end
   end
 
@@ -190,10 +190,10 @@ class Console
     say "Your graph is: " + raw_vertexes_s
     say "Which have been parsed into: " + vertexes.inspect
     say "Here's some examples:\n"
-    say "\nThe distance traveling from A to B to C:"
+    say "\n4. The distance of the route A-E-B-C-D:"
     say "\tfix_path_distance A B C"
-    # say "\nThe distance traveling from A to B to C:"
-    # say "\tfix_path_distance A B C"
+    say "\n6. The number of trips starting at C and ending at C with a maximum of 3 stops:"
+    say "\tpath_count C C 1 3"
   end
 
   def get_input
@@ -207,7 +207,7 @@ class Console
   def execute_actions
     say "\nExit with an empty line"
     until (input = get_input) == '' do
-      say RailwayQuery.new(vertexes).call(*input.split(' '))
+      say RailwayQuery.new(vertexes).call(*input.upcase.split(' '))
     end
   end
 end

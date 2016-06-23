@@ -53,46 +53,47 @@ end
 RSpec.describe Graphs::Path do
   context "with the test vertexes" do
     let(:graph_weights) { Graphs::Parser.new("AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7").vertexes }
-    subject { described_class.new(graph_weights) }
+    subject { described_class.new(graph_weights, start: start, destination: destination) }
 
     describe '#count' do
       context "6. Starting and ending at C with a maximum of 3 stops" do
+        let(:start)       { 'C' }
+        let(:destination) { 'C' }
         it "finds 2 paths" do
-          actual = subject.count('C', 'C', max_traverses: 3)
-          expect(actual).to eq 2
-        end
-      end
-    end
-
-    describe '#count' do
-      context "6. Starting and ending at C with a maximum of 3 stops" do
-        it "finds 2 paths" do
-          actual = subject.count('C', 'C', max_traverses: 3)
+          actual = subject.count(max_traverses: 3)
           expect(actual).to eq 2
         end
       end
 
       context "7. Starting at A and ending at C with exactly 4 stops" do
+        let(:start)       { 'A' }
+        let(:destination) { 'C' }
         it "finds 3 paths" do
-          actual = subject.count('A', 'C', min_traverses: 4, max_traverses: 4)
+          actual = subject.count(min_traverses: 4, max_traverses: 4)
           expect(actual).to eq 3
         end
       end
 
       context "10. From C to C with a weight of less than 30" do
+        let(:start)       { 'C' }
+        let(:destination) { 'C' }
         it "finds 7 paths" do
-          expect(subject.count('C', 'C', max_weight: 29)).to eq 7
+          expect(subject.count(max_weight: 29)).to eq 7
         end
       end
     end
 
     describe '#lightest' do
       context "8. The lightest route from A to C" do
-        it { expect(subject.lightest('A', 'C')).to eq 9 }
+        let(:start)       { 'A' }
+        let(:destination) { 'C' }
+        it { expect(subject.lightest).to eq 9 }
       end
 
-      context "9. The lightest route from A to B" do
-        it { expect(subject.lightest('B', 'B')).to eq 9 }
+      context "9. The lightest route from B to B" do
+        let(:start)       { 'B' }
+        let(:destination) { 'B' }
+        it { expect(subject.lightest).to eq 9 }
       end
     end
   end
