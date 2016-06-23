@@ -146,11 +146,21 @@ module Graphs
 end
 
 class RailwayQuery
-  def initialize(action, params)
+  def initialize(vertexes)
+    @vertexes = vertexes
+  end
+
+  def call(action, *params)
     case action.to_sym
-    when :x then 1
+      # TODO: not_found
+    when :fix_path_distance
+      result = Graphs::HardPath.new(vertexes, nodes: params).weight
+      "The distance is #{result}"
     end
   end
+
+  private
+  attr_reader :vertexes, :nodes
 end
 
 class Console
@@ -179,7 +189,11 @@ class Console
     say "\n* Welcome *\n"
     say "Your graph is: " + raw_vertexes_s
     say "Which have been parsed into: " + vertexes.inspect
-    say "Your options are:"
+    say "Here's some examples:\n"
+    say "\nThe distance traveling from A to B to C:"
+    say "\tfix_path_distance A B C"
+    # say "\nThe distance traveling from A to B to C:"
+    # say "\tfix_path_distance A B C"
   end
 
   def get_input
@@ -193,11 +207,7 @@ class Console
   def execute_actions
     say "\nExit with an empty line"
     until (input = get_input) == '' do
-      execute_action(input)
+      say RailwayQuery.new(vertexes).call(*input.split(' '))
     end
-  end
-
-  def execute_action(input)
-    say input
   end
 end
