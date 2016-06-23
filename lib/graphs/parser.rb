@@ -1,4 +1,6 @@
 module Graphs
+  # Converts a string into the vertexes,
+  # which are links between nodes with their weight
   class Parser
     VERTEX_REGEX = /(\w)(\w)(\d+)/m
 

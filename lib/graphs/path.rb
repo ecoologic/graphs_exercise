@@ -1,9 +1,11 @@
 module Graphs
+  # An intention of going from one node to another
   class Path
     def initialize(vertexes, start:, destination:)
       @vertexes, @start, @destination = vertexes, start, destination
     end
 
+    # non-recursive
     def lightest
       remaining_nodes = all_nodes
       weights         = infinite_weights
@@ -30,6 +32,7 @@ module Graphs
       weights[destination] != Float::INFINITY && weights[destination]
     end
 
+    # recursive
     def count(options = {})
       options = default_options.merge(options)
       path_count = 0

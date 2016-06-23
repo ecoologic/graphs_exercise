@@ -1,4 +1,5 @@
 module Graphs
+  # A very specific path identified by a list of node names
   class HardPath
     def initialize(vertexes, nodes:)
       @vertexes, @nodes = vertexes, nodes

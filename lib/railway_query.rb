@@ -1,3 +1,4 @@
+# A wrapper between the user request and the graph logic
 class RailwayQuery
   def initialize(vertexes)
     @vertexes = vertexes
@@ -25,7 +26,6 @@ class RailwayQuery
     "\n\tshortest b b          # 9) 9"                                         \
     "\n\tcount c c 1 999 29    # 10) 7"                                        \
     "\n\t"                                                                     \
-
   end
 
   def call(action, *params)
@@ -51,7 +51,6 @@ class RailwayQuery
         start:       params[0],
         destination: params[1]
       ).lightest
-
       "The shortest path has a distance of #{result}."
 
     else
