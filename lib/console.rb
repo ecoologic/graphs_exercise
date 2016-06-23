@@ -3,17 +3,14 @@ class Console
   DEFAULT_WRITE_STRATEGY = ->(*args) { puts *args }
 
   def initialize(file_path, read_strategy: DEFAULT_READ_STRATEGY, write_strategy: DEFAULT_WRITE_STRATEGY)
+    @file_path      = file_path
     @read_strategy  = read_strategy
     @write_strategy = write_strategy
-
-    assert_file(file_path)
-    raw_vertexes_s = File.read(file_path)
-    vertexes       = Graphs::Parser.new(raw_vertexes_s).vertexes
-    @query         = RailwayQuery.new(vertexes)
   end
 
   def call
-    display_instructions
+    say query.instructions
+
     execute_actions
 
     say "\n* Bye *\n\n"
@@ -21,11 +18,7 @@ class Console
 
   private
 
-  attr_reader :query, :read_strategy, :write_strategy
-
-  def display_instructions
-    say query.instructions
-  end
+  attr_reader :file_path, :read_strategy, :write_strategy
 
   def get_input
     read_strategy.()
@@ -42,9 +35,16 @@ class Console
     end
   end
 
-  def assert_file(path)
-    return if File.exist?(path.to_s)
-    say "Missing file, try: ruby run.rb fixtures/example_graph.txt"
-    exit
+  def query
+    @query ||= begin
+      unless File.exist?(file_path.to_s)
+        say "Missing file, try: ruby run.rb fixtures/example_graph.txt"
+        exit
+      end
+
+      raw_vertexes_s = File.read(file_path)
+      vertexes       = Graphs::Parser.new(raw_vertexes_s).vertexes
+      RailwayQuery.new(vertexes)
+    end
   end
 end

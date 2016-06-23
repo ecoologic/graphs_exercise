@@ -23,6 +23,21 @@ RSpec.describe Console do
         expect(buffer).to include("The shortest path has a distance of 9.")
       end
     end
+
+    context "when I enter 'shortest B B'" do
+      let :read_strategy do
+        double(:read_strategy).tap do |strategy|
+          allow(strategy)
+            .to receive(:call)
+            .and_return("shortest B B", '') # last '' to exit
+        end
+      end
+
+      it "prints the answer" do
+        subject.call
+        expect(buffer).to include("The shortest path has a distance of 9.")
+      end
+    end
   end
 end
 
