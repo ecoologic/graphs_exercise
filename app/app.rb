@@ -157,6 +157,13 @@ class RailwayQuery
         max_traverses: params[3].to_i,
         max_weight:    params[4].to_i)
       "There are #{result} paths."
+    when :shortest
+      result = Graphs::Path.new(
+        vertexes,
+        start:       params[0],
+        destination: params[1]
+      ).lightest(max_weight: params[2])
+      "The shortest path has a distance of #{result}."
     else
       "Command not recognised"
     end
@@ -197,6 +204,8 @@ class Console
     say "\tfix_path_distance A B C"
     say "\n6. The number of trips starting at C and ending at C with a maximum of 3 stops max weight 99:"
     say "\tpath_count C C 1 3 99"
+    say "\n8. The length of the shortest route (in terms of distance to travel) from A to C."
+    say "\tshortest A C"
   end
 
   def get_input
