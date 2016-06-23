@@ -14,6 +14,54 @@ RSpec.describe Graphs::Parser do
       end
     end
   end
+
+  context "with a different format" do
+    subject { described_class.new("ab5, bc4, cd8") }
+
+    describe '#vertexes' do
+      it "has a route from A to B of 5" do
+        expect(subject.vertexes['A']['B']).to eq 5
+      end
+      it "has a route from D to C of 8" do
+        expect(subject.vertexes['C']['D']).to eq 8
+      end
+    end
+  end
+end
+
+RSpec.describe RailwayQuery do
+  context "with the test vertexes" do
+    subject { described_class.new(Graphs::Parser.new("AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7").vertexes) }
+
+    describe '#call' do
+      {
+        [
+          "1. The distance of the route A-B-C.",
+          :distance, *%w(A B C)
+        ] => "The distance is 9.",
+        [
+          "2. The distance of the route A-D.",
+          :distance, *%w(A D)
+        ] => "The distance is 5.",
+        [
+          "3. The distance of the route A-D-C.",
+          :distance, *%w(A D C)
+        ] => "The distance is 13.",
+        [
+          "4. The distance of the route A-E-B-C-D.",
+          :distance, *%w(A E B C D)
+        ] => "The distance is 22.",
+        [
+          "5. The distance of the route A-E-D.",
+          :distance, *%w(A E D)
+        ] => "NO SUCH ROUTE"
+      }.each do |(description, action, *params), result|
+        it description do
+          expect(subject.call(action, *params)).to eq result
+        end
+      end
+    end
+  end
 end
 
 RSpec.describe Graphs::HardPath do

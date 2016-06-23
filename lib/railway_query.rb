@@ -4,15 +4,28 @@ class RailwayQuery
   end
 
   def instructions
-    "\n* Welcome *\n"                                                                                   \
-    "\nYour graph have been parsed into:\n#{vertexes.inspect}"                                          \
-    "\nHere's some examples:\n"                                                                         \
-    "\n\n4. The distance of the route A-E-B-C-D:"                                                       \
-    "\n\tdistance A B C"                                                                       \
+    "\n* Welcome *\n"                                                          \
+    "\nYour graph have been parsed into:\n#{vertexes.inspect}"                 \
+    "\nHere's some examples:\n"                                                \
+    "\n\n4. The distance of the route A-E-B-C-D:"                              \
+    "\n\tdistance A B C"                                                       \
     "\n\n6. The number of trips starting at C and ending at C with a maximum of 3 stops max weight 99:" \
-    "\n\tcount C C 1 3 99"                                                                         \
+    "\n\tcount C C 1 3 999"                                                                             \
     "\n\n8. The length of the shortest route (in terms of distance to travel) from A to C."             \
-    "\n\tshortest A C"                                                                                  \
+    "\n\tshortest A C"                                                         \
+    "\nHere's the rest:\n"                                                     \
+    "\n\tdistance a b c        # 1) 9"                                         \
+    "\n\tdistance a d          # 2) 5"                                         \
+    "\n\tdistance a d c        # 3) 13"                                        \
+    "\n\tdistance a e b c d    # 4) 22"                                        \
+    "\n\tdistance a e d        # 5) NO SUCH ROUTE"                             \
+    "\n\tcount C C 1 3 999     # 6) 2"                                         \
+    "\n\tCOUNT A C 4 4 999     # 7) 3"                                         \
+    "\n\tshortest a c          # 8) 9"                                         \
+    "\n\tshortest b b          # 9) 9"                                         \
+    "\n\tcount c c 1 999 29    # 10) 7"                                        \
+    "\n\t"                                                                     \
+
   end
 
   def call(action, *params)

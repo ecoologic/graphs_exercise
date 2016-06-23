@@ -6,6 +6,7 @@ class Console
     @read_strategy  = read_strategy
     @write_strategy = write_strategy
 
+    assert_file(file_path)
     raw_vertexes_s = File.read(file_path)
     vertexes       = Graphs::Parser.new(raw_vertexes_s).vertexes
     @query         = RailwayQuery.new(vertexes)
@@ -36,8 +37,14 @@ class Console
 
   def execute_actions
     say "\nExit with an empty line"
-    until (input = get_input) == '' do
+    until (input = get_input).gsub(' ', '') == ''
       say query.call(*input.upcase.split(' '))
     end
+  end
+
+  def assert_file(path)
+    return if File.exist?(path.to_s)
+    say "Missing file, try: ruby run.rb fixtures/example_graph.txt"
+    exit
   end
 end

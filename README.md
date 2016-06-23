@@ -1,5 +1,21 @@
 # Trains (ruby exercise)
 
+## Execution
+
+### Requirements
+
+* Ruby 2.3.1
+* Bundler Gem
+
+### Install
+
+    bundle
+    bundle exec rspec specs --color --format d # verify no errors
+
+### Run
+
+    ruby run.rb fixtures/example_graph.txt
+
 ## Given Exercise
 
 The local commuter railroad services a number of towns in Kiwiland.  Because of monetary concerns, all of the tracks are 'one-way’. That is, a route from Kaitaia to Invercargill does not imply the existence of a route from Invercargill to Kaitaia. In fact, even if both of these routes do happen to exist, they are distinct and are not necessarily the same distance!
@@ -42,19 +58,3 @@ Output #10: 7
  - The application must run and you should provide sufficient evidence that your solution is complete by, as a minimum, indicating that it works correctly against the supplied test data.
  - The submission should be production quality and it can be done in any language (using JavaScript, CoffeeScript or Ruby would be a bonus).
  - You may not use any external libraries to solve this problem, but you may use external libraries or tools for building or testing purposes. Specifically, you may use unit testing libraries or build tools available for your chosen language.
-
-## Execution
-
-### Requirements
-
-* Ruby 2.3.1
-* Bundler Gem
-
-### Install
-
-    bundle
-    bundle exec rspec specs --color --format d # verify no errors
-
-### Run
-
-    ruby run.rb fixtures/example_graph.txt
