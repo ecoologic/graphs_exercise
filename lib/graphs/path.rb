@@ -5,34 +5,11 @@ module Graphs
       @vertexes, @start, @destination = vertexes, start, destination
     end
 
-    # non-recursive
     def lightest
-      remaining_nodes = all_nodes
-      weights         = infinite_weights
-
-      if start == destination # Point #9 start and end in the same route
-        vertexes[start].each { |node, weight| weights[node] = weight }
-        remaining_nodes.delete(start)
-        weights[start] = Float::INFINITY
-      else
-        weights[start] = 0
-      end
-
-      until remaining_nodes.empty?
-        lightest_node = remaining_nodes.min { |a, b| weights[a] <=> weights[b] }
-        remaining_nodes.delete(lightest_node)
-        break false if lightest_node == Float::INFINITY
-
-        vertexes[lightest_node].each_key do |node|
-          weight = weights[lightest_node] + (vertexes[lightest_node][node] || Float::INFINITY)
-          weights[node] = weight if weight < weights[node]
-        end
-      end
-
-      weights[destination] != Float::INFINITY && weights[destination]
+      nodes = Dijkstra.shortest_path(vertexes, starts: start, ends: destination)
+      HardPath.new(vertexes, nodes: nodes).weight
     end
 
-    # recursive
     def count(options = {})
       options = default_options.merge(options)
       path_count = 0
@@ -52,10 +29,10 @@ module Graphs
 
       yield history if found && shortest_ok && longest_ok
 
-      # Must run even when a path is found to satisfy Point #10
+      # Run even when a path is found (Point #10)
       if longest_ok
         vertexes[current_node].each do |next_node, weight|
-          # Re-passing required for Point #7
+          # Now re-passing the same node multiple times (Point #7)
           # next if (history[:path] - [destination]).include?(next_node)
           updated_history = {
             weight:         history[:weight] + weight,
@@ -80,14 +57,14 @@ module Graphs
     end
 
     def all_nodes
-      vertexes.each.reduce [] do |nodes, (node, weights)|
-        nodes + [node] + weights.keys
+      vertexes.each.reduce [] do |result, (node, weights)|
+        result + [node] + weights.keys
       end.uniq
     end
 
     def infinite_weights
-      all_nodes.reduce({}) do |weights, node|
-        weights.merge node => Float::INFINITY
+      all_nodes.reduce({}) do |result, node|
+        result.merge node => Float::INFINITY
       end
     end
   end

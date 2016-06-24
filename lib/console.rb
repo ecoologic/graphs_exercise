@@ -1,4 +1,4 @@
-# what the user will use in the shell to interact with the app
+# What the user will use in the shell to interact with the app
 class Console
   DEFAULT_READ_STRATEGY = ->(*) { STDIN::gets.chomp }
   DEFAULT_WRITE_STRATEGY = ->(*args) { puts *args }
@@ -10,6 +10,8 @@ class Console
   end
 
   def call
+    say "\n* Welcome *\n"                                                          \
+
     say query.instructions
 
     execute_actions
