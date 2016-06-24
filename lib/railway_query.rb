@@ -1,11 +1,11 @@
 # A wrapper between the user request and the graph logic
+# TODO? RailwayController ?
 class RailwayQuery
   def initialize(vertexes)
     @vertexes = vertexes
   end
 
   def instructions
-    "\n* Welcome *\n"                                                          \
     "\nYour graph have been parsed into:\n#{vertexes.inspect}"                 \
     "\nHere's some examples:\n"                                                \
     "\n\n4. The distance of the route A-E-B-C-D:"                              \

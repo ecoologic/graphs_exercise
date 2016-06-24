@@ -5,7 +5,6 @@ module Graphs
     VERTEX_REGEX = /(\w)(\w)(\d+)/m
 
     # eg: raw_vertexes_s = "AB5 BC4 CD8 DC8 DE6 AD5 CE2 EB3 AE7"
-    # todo: nodes
     def initialize(raw_vertexes_s)
       @raw_vertexes_s = raw_vertexes_s
     end

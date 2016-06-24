@@ -2,6 +2,8 @@
 
 ## Execution
 
+NOTES: Using Dijkstra for the shortest path.
+
 ### Requirements
 
 * Ruby 2.3.1
